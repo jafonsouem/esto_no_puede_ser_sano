@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Página Romántica 2</title>
+    <title>Mi Página Romántica</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* Estilos generales */
@@ -29,22 +29,71 @@
             animation: fadeIn 2s ease-in-out;
         }
 
-        /* Video responsive */
+        /* Poema con efecto de máquina de escribir */
+        #poema {
+            font-size: 1.5rem;
+            max-width: 80%;
+            white-space: pre-wrap;
+            overflow: hidden;
+            border-right: 3px solid white;
+            display: inline-block;
+            animation: typing 5s steps(40, end) forwards, blink 1s infinite;
+        }
+
+        /* Efecto de máquina de escribir */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* Contenedor del video */
         .video-container {
             max-width: 90%;
             margin-top: 20px;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: fadeInZoom 2s forwards 3s;
         }
 
+        /* Video con animación */
         video {
             width: 100%;
             border-radius: 15px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.5s ease-in-out, box-shadow 0.5s;
         }
 
-        /* Animación de entrada */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        video:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Animación de entrada para el video */
+        @keyframes fadeInZoom {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Botón de música */
+        .music-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 20px;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .music-btn:hover {
+            background: white;
+            color: #ff69b4;
         }
 
         /* Corazones flotando */
@@ -79,8 +128,21 @@
 </head>
 <body>
     <h1>“El amor es la poesía de los sentidos.”</h1>
+
+    <!-- Poema con efecto de máquina de escribir -->
+    <p id="poema"></p>
+
+    <!-- Botón para controlar la música -->
+    <button class="music-btn" id="musicButton">🎶 Reproducir música</button>
+
+    <!-- Audio de fondo (NO autoplay por restricciones de los navegadores) -->
+    <audio id="backgroundMusic" loop>
+        <source src="musica.mp3" type="audio/mp3">
+        Tu navegador no soporta el audio.
+    </audio>
+
     <div class="video-container">
-        <video controls>
+        <video id="romanticVideo" controls>
             <source src="video.mp4" type="video/mp4">
             Tu navegador no soporta el video.
         </video>
@@ -88,6 +150,21 @@
 
     <!-- Corazones flotando -->
     <script>
+        // Texto del poema
+        const poemaTexto = `"Si sé lo que es el amor, es por ti."\n\n— Hermann Hesse`;
+
+        // Efecto de máquina de escribir
+        let index = 0;
+        function escribirPoema() {
+            if (index < poemaTexto.length) {
+                document.getElementById("poema").innerHTML += poemaTexto.charAt(index);
+                index++;
+                setTimeout(escribirPoema, 100);
+            }
+        }
+        setTimeout(escribirPoema, 1000);
+
+        // Función para crear corazones animados
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
@@ -97,7 +174,35 @@
             setTimeout(() => { heart.remove(); }, 4000);
         }
         setInterval(createHeart, 500);
+
+        // Control de la música
+        const music = document.getElementById('backgroundMusic');
+        const musicButton = document.getElementById('musicButton');
+        const video = document.getElementById('romanticVideo');
+
+        let isPlaying = false;
+
+        // Función para manejar el botón de música
+        musicButton.addEventListener('click', function() {
+            if (!isPlaying) {
+                music.play();
+                musicButton.textContent = "⏸️ Pausar música";
+                isPlaying = true;
+            } else {
+                music.pause();
+                musicButton.textContent = "🎶 Reproducir música";
+                isPlaying = false;
+            }
+        });
+
+        // Detener la música cuando el video se reproduce
+        video.addEventListener('play', function() {
+            if (isPlaying) {
+                music.pause();
+                musicButton.textContent = "🎶 Reproducir música";
+                isPlaying = false;
+            }
+        });
     </script>
 </body>
 </html>
-
