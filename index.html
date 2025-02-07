@@ -47,4 +47,110 @@
             color: white;
             padding: 10px 20px;
             font-size: 1rem;
+            cursor: pointer;
+            border-radius: 20px;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .music-btn:hover {
+            background: white;
+            color: #ff69b4;
+        }
+
+        /* Video */
+        .video-container {
+            max-width: 90%;
+            margin-top: 20px;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.5s ease-in-out, box-shadow 0.5s;
+        }
+
+        video:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <h1>“El amor es la poesía de los sentidos.”</h1>
+
+    <p id="poema"></p>
+
+    <!-- Botón para controlar la música -->
+    <button class="music-btn" id="musicButton">🎶 Reproducir música</button>
+
+    <!-- Audio de fondo -->
+    <audio id="backgroundMusic" loop>
+        <source src="musica.mp3" type="audio/mp3">
+        Tu navegador no soporta el audio.
+    </audio>
+
+    <div class="video-container">
+        <video id="romanticVideo" controls>
+            <source src="video.mp4" type="video/mp4">
+            Tu navegador no soporta el video.
+        </video>
+    </div>
+
+    <script>
+        const music = document.getElementById('backgroundMusic');
+        const musicButton = document.getElementById('musicButton');
+        const video = document.getElementById('romanticVideo');
+
+        let isPlaying = false;
+        let musicStarted = false; // Para evitar que se active varias veces
+
+        // Reproducir música con el primer clic en cualquier parte de la página
+        document.addEventListener('click', function() {
+            if (!musicStarted) {
+                music.play().catch(error => console.log("Autoplay bloqueado:", error));
+                musicStarted = true;
+                isPlaying = true;
+                musicButton.textContent = "⏸️ Pausar música";
+            }
+        });
+
+        // Función para manejar el botón de música
+        musicButton.addEventListener('click', function() {
+            if (!isPlaying) {
+                music.play();
+                musicButton.textContent = "⏸️ Pausar música";
+                isPlaying = true;
+            } else {
+                music.pause();
+                musicButton.textContent = "🎶 Reproducir música";
+                isPlaying = false;
+            }
+        });
+
+        // Detener la música cuando el video se reproduce
+        video.addEventListener('play', function() {
+            if (isPlaying) {
+                music.pause();
+                musicButton.textContent = "🎶 Reproducir música";
+                isPlaying = false;
+            }
+        });
+
+        // Efecto de máquina de escribir para el poema
+        const poemaTexto = `"Si sé lo que es el amor, es por ti."\n\n— Hermann Hesse`;
+        let index = 0;
+        function escribirPoema() {
+            if (index < poemaTexto.length) {
+                document.getElementById("poema").innerHTML += poemaTexto.charAt(index);
+                index++;
+                setTimeout(escribirPoema, 100);
+            }
+        }
+        setTimeout(escribirPoema, 1000);
+    </script>
+</body>
+</html>
+
 
