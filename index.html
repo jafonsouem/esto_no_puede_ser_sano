@@ -22,14 +22,14 @@
             position: relative;
         }
 
-        /* Título */
+        /* Título con animación */
         h1 {
             font-size: 2.5rem;
             text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
             animation: fadeIn 2s ease-in-out;
         }
 
-        /* Poema */
+        /* Poema con efecto de máquina de escribir */
         #poema {
             font-size: 1.5rem;
             max-width: 80%;
@@ -38,6 +38,44 @@
             border-right: 3px solid white;
             display: inline-block;
             animation: typing 5s steps(40, end) forwards, blink 1s infinite;
+        }
+
+        /* Efecto de máquina de escribir */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* Contenedor del video */
+        .video-container {
+            max-width: 90%;
+            margin-top: 20px;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: fadeInZoom 2s forwards 3s;
+        }
+
+        /* Video con animación */
+        video {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.5s ease-in-out, box-shadow 0.5s;
+        }
+
+        video:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Animación de entrada para el video */
+        @keyframes fadeInZoom {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         /* Botón de música */
@@ -58,34 +96,46 @@
             color: #ff69b4;
         }
 
-        /* Video */
-        .video-container {
-            max-width: 90%;
-            margin-top: 20px;
+        /* Corazones flotando */
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: pink;
+            transform: rotate(-45deg);
+            animation: float 4s infinite ease-in-out;
         }
 
-        video {
-            width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            transition: transform 0.5s ease-in-out, box-shadow 0.5s;
+        .heart:before,
+        .heart:after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: pink;
+            border-radius: 50%;
         }
 
-        video:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        .heart:before { top: -10px; left: 0; }
+        .heart:after { left: 10px; top: 0; }
+
+        /* Animación de los corazones */
+        @keyframes float {
+            0% { transform: translateY(0) rotate(-45deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(-45deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
     <h1>“El amor es la poesía de los sentidos.”</h1>
 
+    <!-- Poema con efecto de máquina de escribir -->
     <p id="poema"></p>
 
     <!-- Botón para controlar la música -->
     <button class="music-btn" id="musicButton">🎶 Reproducir música</button>
 
-    <!-- Audio de fondo -->
+    <!-- Audio de fondo (NO autoplay por restricciones de los navegadores) -->
     <audio id="backgroundMusic" loop>
         <source src="musica.mp3" type="audio/mp3">
         Tu navegador no soporta el audio.
@@ -98,23 +148,39 @@
         </video>
     </div>
 
+    <!-- Corazones flotando -->
     <script>
+        // Texto del poema
+        const poemaTexto = `"Si sé lo que es el amor, es por ti."\n\n— Hermann Hesse`;
+
+        // Efecto de máquina de escribir
+        let index = 0;
+        function escribirPoema() {
+            if (index < poemaTexto.length) {
+                document.getElementById("poema").innerHTML += poemaTexto.charAt(index);
+                index++;
+                setTimeout(escribirPoema, 100);
+            }
+        }
+        setTimeout(escribirPoema, 1000);
+
+        // Función para crear corazones animados
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = (Math.random() * 3 + 2) + "s"; 
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 4000);
+        }
+        setInterval(createHeart, 500);
+
+        // Control de la música
         const music = document.getElementById('backgroundMusic');
         const musicButton = document.getElementById('musicButton');
         const video = document.getElementById('romanticVideo');
 
         let isPlaying = false;
-        let musicStarted = false; // Para evitar que se active varias veces
-
-        // Reproducir música con el primer clic en cualquier parte de la página
-        document.addEventListener('click', function() {
-            if (!musicStarted) {
-                music.play().catch(error => console.log("Autoplay bloqueado:", error));
-                musicStarted = true;
-                isPlaying = true;
-                musicButton.textContent = "⏸️ Pausar música";
-            }
-        });
 
         // Función para manejar el botón de música
         musicButton.addEventListener('click', function() {
@@ -137,20 +203,6 @@
                 isPlaying = false;
             }
         });
-
-        // Efecto de máquina de escribir para el poema
-        const poemaTexto = `"Si sé lo que es el amor, es por ti."\n\n— Hermann Hesse`;
-        let index = 0;
-        function escribirPoema() {
-            if (index < poemaTexto.length) {
-                document.getElementById("poema").innerHTML += poemaTexto.charAt(index);
-                index++;
-                setTimeout(escribirPoema, 100);
-            }
-        }
-        setTimeout(escribirPoema, 1000);
     </script>
 </body>
 </html>
-
-
