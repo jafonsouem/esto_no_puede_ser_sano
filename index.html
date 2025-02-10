@@ -22,60 +22,14 @@
             position: relative;
         }
 
-        /* Fondo con luces suaves */
-        .background-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .glow {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            filter: blur(20px);
-            animation: moveGlows 6s infinite alternate ease-in-out;
-        }
-
-        @keyframes moveGlows {
-            from { transform: translateY(0); }
-            to { transform: translateY(-20px); }
-        }
-
-        /* Estrellas parpadeantes */
-        .star {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: white;
-            border-radius: 50%;
-            opacity: 0;
-            animation: twinkle 3s infinite ease-in-out;
-        }
-
-        @keyframes twinkle {
-            50% { opacity: 1; transform: scale(1.3); }
-        }
-
-        /* Título con brillo sutil */
+        /* Título con animación */
         h1 {
             font-size: 2.5rem;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-            animation: glowText 2s infinite alternate ease-in-out;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 2s ease-in-out;
         }
 
-        @keyframes glowText {
-            from { text-shadow: 0 0 10px rgba(255, 255, 255, 0.6); }
-            to { text-shadow: 0 0 20px rgba(255, 255, 255, 1); }
-        }
-
-        /* Poema */
+        /* Poema con efecto de máquina de escribir */
         #poema {
             font-size: 1.5rem;
             max-width: 80%;
@@ -86,19 +40,26 @@
             animation: typing 5s steps(40, end) forwards, blink 1s infinite;
         }
 
-        /* Video con aparición suave */
+        /* Efecto de máquina de escribir */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* Contenedor del video */
         .video-container {
             max-width: 90%;
             margin-top: 20px;
             opacity: 0;
-            animation: fadeIn 2s forwards 3s;
+            transform: scale(0.9);
+            animation: fadeInZoom 2s forwards 3s;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        /* Video con animación */
         video {
             width: 100%;
             border-radius: 15px;
@@ -110,19 +71,75 @@
             transform: scale(1.05);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
         }
+
+        /* Animación de entrada para el video */
+        @keyframes fadeInZoom {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Botón de música */
+        .music-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 20px;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .music-btn:hover {
+            background: white;
+            color: #ff69b4;
+        }
+
+        /* Corazones flotando */
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: pink;
+            transform: rotate(-45deg);
+            animation: float 4s infinite ease-in-out;
+        }
+
+        .heart:before,
+        .heart:after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: pink;
+            border-radius: 50%;
+        }
+
+        .heart:before { top: -10px; left: 0; }
+        .heart:after { left: 10px; top: 0; }
+
+        /* Animación de los corazones */
+        @keyframes float {
+            0% { transform: translateY(0) rotate(-45deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(-45deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
     <h1>“El amor es la poesía de los sentidos.”</h1>
 
+    <!-- Poema con efecto de máquina de escribir -->
     <p id="poema"></p>
 
-    <!-- Contenedor de animaciones de fondo -->
-    <div class="background-animation">
-        <div class="glow" style="top: 20%; left: 10%;"></div>
-        <div class="glow" style="top: 50%; left: 70%;"></div>
-        <div class="glow" style="bottom: 20%; right: 15%;"></div>
-    </div>
+    <!-- Botón para controlar la música -->
+    <button class="music-btn" id="musicButton">🎶 Reproducir música</button>
+
+    <!-- Audio de fondo (NO autoplay por restricciones de los navegadores) -->
+    <audio id="backgroundMusic" loop>
+        <source src="musica.mp3" type="audio/mp3">
+        Tu navegador no soporta el audio.
+    </audio>
 
     <div class="video-container">
         <video id="romanticVideo" controls>
@@ -131,9 +148,12 @@
         </video>
     </div>
 
+    <!-- Corazones flotando -->
     <script>
-        // Efecto de máquina de escribir para el poema
+        // Texto del poema
         const poemaTexto = `"Si sé lo que es el amor, es por ti."\n\n— Hermann Hesse`;
+
+        // Efecto de máquina de escribir
         let index = 0;
         function escribirPoema() {
             if (index < poemaTexto.length) {
@@ -144,18 +164,45 @@
         }
         setTimeout(escribirPoema, 1000);
 
-        // Crear estrellas parpadeantes
-        function createStars() {
-            for (let i = 0; i < 20; i++) {
-                let star = document.createElement("div");
-                star.classList.add("star");
-                star.style.top = Math.random() * 100 + "vh";
-                star.style.left = Math.random() * 100 + "vw";
-                star.style.animationDelay = Math.random() * 3 + "s";
-                document.body.appendChild(star);
-            }
+        // Función para crear corazones animados
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = (Math.random() * 3 + 2) + "s"; 
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 4000);
         }
-        createStars();
+        setInterval(createHeart, 500);
+
+        // Control de la música
+        const music = document.getElementById('backgroundMusic');
+        const musicButton = document.getElementById('musicButton');
+        const video = document.getElementById('romanticVideo');
+
+        let isPlaying = false;
+
+        // Función para manejar el botón de música
+        musicButton.addEventListener('click', function() {
+            if (!isPlaying) {
+                music.play();
+                musicButton.textContent = "⏸️ Pausar música";
+                isPlaying = true;
+            } else {
+                music.pause();
+                musicButton.textContent = "🎶 Reproducir música";
+                isPlaying = false;
+            }
+        });
+
+        // Detener la música cuando el video se reproduce
+        video.addEventListener('play', function() {
+            if (isPlaying) {
+                music.pause();
+                musicButton.textContent = "🎶 Reproducir música";
+                isPlaying = false;
+            }
+        });
     </script>
 </body>
 </html>
