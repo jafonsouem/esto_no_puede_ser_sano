@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2 años dan para mucho</title>
+    <title>Página Romántica</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -21,14 +21,14 @@
             position: relative;
         }
 
-        /* Fondo con corazones flotando */
+        /* Fondo con corazones flotando usando imágenes SVG */
         .heart {
             position: absolute;
-            width: 15px;
-            height: 15px;
-            background-color: pink;
-            transform: rotate(-45deg);
-            animation: float 4s infinite ease-in-out;
+            width: 25px;
+            height: 25px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+            background-size: cover;
+            animation: float 12s infinite ease-in-out;
         }
 
         @keyframes float {
@@ -126,20 +126,19 @@
         }
         setTimeout(escribirIntroduccion, 3000);
 
-        // Generar corazones flotantes
+        // Generar corazones flotantes con imágenes SVG
         function createHearts() {
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 15; i++) {
                 let heart = document.createElement("div");
                 heart.classList.add("heart");
                 heart.style.left = Math.random() * 100 + "vw";
                 heart.style.top = Math.random() * 100 + "vh";
-                heart.style.animationDuration = (Math.random() * 8 + 8) + "s";
+                heart.style.animationDuration = (Math.random() * 6 + 5) + "s";
                 document.body.appendChild(heart);
-                setTimeout(() => heart.remove(), 15000);
+                setTimeout(() => heart.remove(), 12000);
             }
         }
         setInterval(createHearts, 2000);
     </script>
 </body>
 </html>
-
